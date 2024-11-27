@@ -1,73 +1,178 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini App</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Telegram Mini Apps Vanilla JS Sample App</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            --bg-color: var(--tg-theme-bg-color);
+            font: 14px/1.5 "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--tg-theme-text-color);
             margin: 0;
-            padding: 0;
+            padding: 20px;
+            color-scheme: var(--tg-color-scheme);
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            align-items: center;
         }
+
         header {
-            background: #4CAF50;
-            color: white;
-            padding: 10px;
+            background: var(--tg-theme-secondary-bg-color);
+            width: 100%;
+            padding: 15px;
             text-align: center;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
         }
+
+        h1 {
+            font-size: 24px;
+            margin: 0;
+            color: var(--tg-theme-text-color);
+        }
+
         main {
-            flex: 1;
+            width: 100%;
+            max-width: 600px;
             padding: 20px;
-            background: #f4f4f4;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-        footer {
-            background: #333;
+
+        button {
+            background-color: var(--tg-theme-link-color);
             color: white;
-            text-align: center;
-            padding: 10px 0;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+            transition: background 0.3s;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: darken(var(--tg-theme-link-color), 10%);
+        }
+
+        ul {
+            padding: 0;
+            list-style: none;
+        }
+
+        li {
+            margin: 10px 0;
+        }
+
+        a {
+            color: var(--tg-theme-link-color);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        #viewport {
             position: fixed;
-            bottom: 0;
             left: 0;
             right: 0;
-        }
-        .nav {
-            display: flex;
-            justify-content: space-around;
-        }
-        .nav a {
-            color: white;
-            text-decoration: none;
-            padding: 10px;
-            transition: background 0.3s;
-        }
-        .nav a:hover {
-            background: #575757;
+            top: 0;
+            height: var(--tg-viewport-stable-height, 100vh);
+            pointer-events: none;
+            transition: all .2s ease;
         }
     </style>
 </head>
+
 <body>
+    <header>
+        <h1>Telegram Mini App</h1>
+        <p id="user-info"></p>
 
-<header>
-    <h1>Добро пожаловать в Mini App</h1>
-</header>
+        <script>
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get('user_id');
+            const username = urlParams.get('username');
+    
+            document.getElementById('user-info').innerText = `Ваше имя: ${username}, ID: ${userId}`;
+        </script>
+    </header>
 
-<main>
-    <h2>Основной контент</h2>
-    <p>Здесь размещается основной контент приложения. Вы можете добавлять текст, изображения и другие элементы.</p>
-</main>
+    <main>
+        <h2>Modals</h2>
+        <button onclick="Telegram.WebApp.showAlert('Hello World!');">Launch Alert</button>
+        <button onclick="showPopup();">Launch Popup</button>
 
-<footer>
-    <div class="nav">
-        <a href="#">Главная</a>
-        <a href="#">Услуги</a>
-        <a href="#">Контакты</a>
-        <a href="#">О нас</a>
-    </div>
-</footer>
+        <h2>Links</h2>
+        <ul>
+            <li>
+                <a href="javascript:Telegram.WebApp.openTelegramLink('https://t.me/trendingapps');">Open link within Telegram</a>
+            </li>
+            <li>
+                <a href="javascript:Telegram.WebApp.openLink('https://ton.org/');">Open link in external browser</a>
+            </li>
+            <li>
+                <a href="javascript:Telegram.WebApp.openLink('https://telegra.ph/api',{try_instant_view:true});">Open link inside Telegram webview</a>
+            </li>
+        </ul>
 
+        <h2>Buttons</h2>
+        <button onclick="Telegram.WebApp.expand();">Expand Webview</button>
+        <button onclick="toggleMainButton();">Toggle Main Button</button>
+    </main>
+
+    <div id="viewport"></div>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        // Init TWA
+        Telegram.WebApp.ready();
+
+        // Event occurs whenever theme settings are changed in the user's Telegram app (including switching to night mode).
+        Telegram.WebApp.onEvent('themeChanged', function() {
+            document.documentElement.className = Telegram.WebApp.colorScheme;
+            document.body.style.backgroundColor = Telegram.WebApp.backgroundColor;
+        });
+
+        // Show main button
+        Telegram.WebApp.MainButton.setParams({
+            text: 'Main Button'
+        });
+        Telegram.WebApp.MainButton.onClick(function () {
+            Telegram.WebApp.showAlert('Main Button was clicked')
+        });	
+        Telegram.WebApp.MainButton.show();
+
+        // Function to call showPopup API
+        function showPopup() {
+            Telegram.WebApp.showPopup({
+                title: 'Title',
+                message: 'Some message',
+                buttons: [
+                    {id: 'link', type: 'default', text: 'Open ton.org'},
+                    {type: 'cancel'},
+                ]
+            }, function(btn) {
+                if (btn === 'link') {
+                    Telegram.WebApp.openLink('https://ton.org/');
+                }
+            });
+        };
+
+        // Function to toggle main TWA button
+        function toggleMainButton() {
+            if (Telegram.WebApp.MainButton.isVisible) {
+                Telegram.WebApp.MainButton.hide();
+            } else {
+                Telegram.WebApp.MainButton.show();
+            }
+        };
+    </script>
 </body>
 </html>
