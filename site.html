@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background: #4CAF50;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        main {
+            flex: 1;
+            padding: 20px;
+            background: #f4f4f4;
+        }
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+        .nav {
+            display: flex;
+            justify-content: space-around;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            transition: background 0.3s;
+        }
+        .nav a:hover {
+            background: #575757;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Добро пожаловать в Mini App</h1>
+</header>
+
+<main>
+    <h2>Основной контент</h2>
+    <p>Здесь размещается основной контент приложения. Вы можете добавлять текст, изображения и другие элементы.</p>
+</main>
+
+<footer>
+    <div class="nav">
+        <a href="#">Главная</a>
+        <a href="#">Услуги</a>
+        <a href="#">Контакты</a>
+        <a href="#">О нас</a>
+    </div>
+</footer>
+
+</body>
+</html>
